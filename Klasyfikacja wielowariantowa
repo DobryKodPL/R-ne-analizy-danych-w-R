@@ -1,0 +1,43 @@
+
+
+############# Wczytywanie danych#############
+df <- read.csv("C:/Users/lenovo/Desktop/Analiza danych - R/Titanic_train.csv",header=T,na.strings=c(""),as.is=T)
+head(df)
+
+############# Budowa przykładowego zbioru danych#############
+d <- subset(df,select=c(2,3,5,6,7,10,12))
+head(d)
+dim(d)
+
+
+############# Zamiana typu danych#############
+class(d$Embarked)
+d$Embarked <- as.factor(d$Embarked)
+class(d$Embarked)
+
+levels(d$Embarked)
+
+############# Operacje na NA (zastępowanie średnią)#############
+d$Age[is.na(d$Age)] <- mean(d$Age,na.rm=T)
+
+############# Train i test#############
+train <-d[1:700,]
+test <- d[700:891,]
+
+############# Ustalanie wartości referencyjnej#############
+train$Embarked <- relevel(train$Embarked, ref = "Q")
+
+############# Budowa modelu#############
+require(nnet)
+multinom_model <- multinom(Embarked ~ ., data = train)
+head(round(fitted(multinom_model), 2))
+
+############# Predykcja#############
+test$ClassPredicted <- predict(multinom_model, newdata = test, "class")
+tab1 <- table(test$Embarked, test$ClassPredicted)
+tab1
+
+
+############# Badanie dopasowania - jakości#############
+round((sum(diag(tab1))/sum(tab1))*100,2)
+
