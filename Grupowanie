@@ -1,0 +1,25 @@
+############# Wczytywanie danych############# 
+df <- read.csv("C:/Users/lenovo/Desktop/Vscode/Ćwiczenia z pythona/pokemon_data.csv",header=T,na.strings=c(""),as.is=T)
+head(df)
+
+############# Budowa przykładowego zbioru danych############# 
+df2 <- subset(df,select=c(5,6))
+df3<-df2
+head(df3)
+
+############# Wczytywanie biblitek#############
+install.packages("factoextra")
+library(factoextra)
+
+############# Skalowanie danych#############
+df3 <- scale(df3)
+head(df3)
+
+############# Wykres bez grupowania#############
+plot(df3)
+
+############# Grupowanie#############
+km <- kmeans(df3, centers = 4, nstart = 25)
+
+############# Wykres z grupowaniem#############
+fviz_cluster(km, data = df3)
