@@ -1,0 +1,25 @@
+############# Wczytywanie danych#############
+df <- read.csv("C:/Users/lenovo/Desktop/Vscode/Ćwiczenia z pythona/pokemon_data.csv",header=T,na.strings=c(""),as.is=T)
+head(df)
+
+############# Budowa przykładowego zbioru danych#############
+df2 <- subset(df,select=c(5))
+df2$opis <- ifelse(df2$HP <= 80, "Mało", "Dużo")
+head(df2)
+dim(df2)
+
+
+############# Ilości bez próbkowania#############
+table(df2$opis)
+
+#############over sampling#############
+data_balanced_over <- ovun.sample(opis ~ ., data = df2, method = "over",N = 1300)$data
+table(data_balanced_over$opis)
+
+#############under sampling#############
+data_balanced_under <- ovun.sample(opis ~ ., data = df2, method = "under", N = 500, seed = 1)$data
+table(data_balanced_under$opis)
+
+#############both sampling#############
+data_balanced_both <- ovun.sample(opis ~ ., data = df2, method = "both", p=0.5,N=2000, seed = 1)$data
+table(data_balanced_both$opis)
